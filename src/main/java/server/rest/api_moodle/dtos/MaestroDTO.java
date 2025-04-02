@@ -5,6 +5,7 @@ import java.util.List;
 public class MaestroDTO {
     private int id;
     private String nombre;
+    private String apellido;
     private String email;
     private String password;
     private List<Integer> cursosIds;
@@ -23,6 +24,14 @@ public class MaestroDTO {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 
     public String getEmail() {
