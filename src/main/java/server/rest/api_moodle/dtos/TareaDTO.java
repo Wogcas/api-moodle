@@ -1,5 +1,6 @@
 package server.rest.api_moodle.dtos;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -8,8 +9,8 @@ public class TareaDTO {
     private int id;
     private String titulo;
     private String descripcion;
-    private Date fechaEntrega;
-    private Date fechaRevision;
+    private LocalDateTime fechaEntrega;
+    private LocalDateTime fechaRevision;
     private int cursoId;
     private List<Integer> asignacionesIds;
 
@@ -37,19 +38,19 @@ public class TareaDTO {
         this.descripcion = descripcion;
     }
 
-    public Date getFechaEntrega() {
+    public LocalDateTime getFechaEntrega() {
         return fechaEntrega;
     }
 
-    public void setFechaEntrega(Date fechaEntrega) {
+    public void setFechaEntrega(LocalDateTime fechaEntrega) {
         this.fechaEntrega = fechaEntrega;
     }
 
-    public Date getFechaRevision() {
+    public LocalDateTime getFechaRevision() {
         return fechaRevision;
     }
 
-    public void setFechaRevision(Date fechaRevision) {
+    public void setFechaRevision(LocalDateTime fechaRevision) {
         this.fechaRevision = fechaRevision;
     }
 

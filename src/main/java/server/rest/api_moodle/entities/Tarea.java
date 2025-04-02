@@ -2,6 +2,7 @@ package server.rest.api_moodle.entities;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -13,8 +14,8 @@ public class Tarea {
     private int id;
     private String titulo;
     private String descripcion;
-    private Date fechaEntrega;
-    private Date fechaRevision;
+    private LocalDateTime fechaEntrega;
+    private LocalDateTime fechaRevision;
 
     @ManyToOne
     @JoinColumn(name = "curso_id", nullable = false)
@@ -49,19 +50,19 @@ public class Tarea {
         this.descripcion = descripcion;
     }
 
-    public Date getFechaEntrega() {
+    public LocalDateTime getFechaEntrega() {
         return fechaEntrega;
     }
 
-    public void setFechaEntrega(Date fechaEntrega) {
+    public void setFechaEntrega(LocalDateTime fechaEntrega) {
         this.fechaEntrega = fechaEntrega;
     }
 
-    public Date getFechaRevision() {
+    public LocalDateTime getFechaRevision() {
         return fechaRevision;
     }
 
-    public void setFechaRevision(Date fechaRevision) {
+    public void setFechaRevision(LocalDateTime fechaRevision) {
         this.fechaRevision = fechaRevision;
     }
 
