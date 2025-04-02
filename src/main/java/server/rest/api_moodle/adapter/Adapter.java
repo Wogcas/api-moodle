@@ -7,12 +7,15 @@ import server.rest.api_moodle.entities.Curso;
 public class Adapter {
 
     public static Curso toEntity(@NotNull CursoDTO cursoDTO) {
-
         Curso curso = new Curso();
-
         curso.setNombre(cursoDTO.getNombre());
         System.out.println("Entidad Curso a guardar: " + curso);
-
         return curso;
+    }
+
+    public static CursoDTO toDTO(Curso curso) {
+        CursoDTO dto = new CursoDTO();
+        dto.setNombre(curso.getNombre());
+        return dto;
     }
 }

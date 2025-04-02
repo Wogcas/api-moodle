@@ -6,6 +6,9 @@ import server.rest.api_moodle.dtos.CursoDTO;
 import server.rest.api_moodle.entities.Curso;
 import server.rest.api_moodle.repositorys.CursoRepository;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CursoService {
 
@@ -27,6 +30,13 @@ public class CursoService {
         } catch (Exception e) {
             throw new RuntimeException("Error en el servidor",e);
         }
+    }
+
+    public List<CursoDTO> obtenerTodosLosCursos() {
+        List<Curso> cursos = cursoRepo.findAll();
+        return cursos.stream()
+                .map(Adapter::toDTO) // Cursos a DTO
+                .collect(Collectors.toList());
     }
 
 }
