@@ -6,5 +6,5 @@ import server.rest.api_moodle.entities.Alumno;
 
 @Repository
 public interface AlumnoRepository extends JpaRepository<Alumno, Integer> {
-    boolean existsByEmail(String email);
+    boolean findByEmail(String email);
 }

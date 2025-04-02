@@ -35,7 +35,7 @@ public class CursoService {
     public List<CursoDTO> obtenerTodosLosCursos() {
         List<Curso> cursos = cursoRepo.findAll();
         return cursos.stream()
-                .map(Adapter::toDTO) // Cursos a DTO
+                .map(Adapter::toDTO)
                 .collect(Collectors.toList());
     }
 

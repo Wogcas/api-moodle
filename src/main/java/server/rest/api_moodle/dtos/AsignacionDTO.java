@@ -1,11 +1,11 @@
 package server.rest.api_moodle.dtos;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class AsignacionDTO {
     private int id;
     private double nota;
-    private Date fechaPublicacion;
+    private LocalDateTime fechaPublicacion;
     private int alumnoId;
     private int tareaId;
 
@@ -25,11 +25,11 @@ public class AsignacionDTO {
         this.nota = nota;
     }
 
-    public Date getFechaPublicacion() {
+    public LocalDateTime getFechaPublicacion() {
         return fechaPublicacion;
     }
 
-    public void setFechaPublicacion(Date fechaPublicacion) {
+    public void setFechaPublicacion(LocalDateTime fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     }
 

@@ -1,9 +1,6 @@
 package server.rest.api_moodle.adapter;
 
-import server.rest.api_moodle.dtos.AlumnoDTO;
-import server.rest.api_moodle.dtos.CursoDTO;
-import server.rest.api_moodle.dtos.MaestroDTO;
-import server.rest.api_moodle.dtos.TareaDTO;
+import server.rest.api_moodle.dtos.*;
 import server.rest.api_moodle.entities.*;
 
 import java.util.List;
@@ -18,10 +15,25 @@ public class Adapter {
         return curso;
     }
 
-    public static CursoDTO toDTO(Curso curso) {
+    public static CursoDTO toDTO(Curso entity) {
         CursoDTO dto = new CursoDTO();
-        dto.setNombre(curso.getNombre());
-        dto.setId(curso.getId());
+        dto.setId(entity.getId());
+        dto.setNombre(entity.getNombre());
+
+        if (entity.getAlumnos() != null) {
+            List<Integer> alumnosIds = entity.getAlumnos().stream()
+                    .map(Alumno::getId)
+                    .collect(Collectors.toList());
+            dto.setAlumnosIds(alumnosIds);
+        }
+
+        if (entity.getTareas() != null) {
+            List<Integer> tareasIds = entity.getTareas().stream()
+                    .map(Tarea::getId)
+                    .collect(Collectors.toList());
+            dto.setTareasIds(tareasIds);
+        }
+
         return dto;
     }
 
@@ -114,6 +126,31 @@ public class Adapter {
                     .map(Asignacion::getId)
                     .collect(Collectors.toList());
             dto.setAsignacionesIds(asignacionesIds);
+        }
+
+        return dto;
+    }
+
+    public static Asignacion toEntity(AsignacionDTO dto) {
+        Asignacion asignacion = new Asignacion();
+        asignacion.setId(dto.getId());
+        asignacion.setNota(dto.getNota());
+        asignacion.setFechaPublicacion(dto.getFechaPublicacion());
+        return asignacion;
+    }
+
+    public static AsignacionDTO toDTO(Asignacion entity) {
+        AsignacionDTO dto = new AsignacionDTO();
+        dto.setId(entity.getId());
+        dto.setNota(entity.getNota());
+        dto.setFechaPublicacion(entity.getFechaPublicacion());
+
+        if (entity.getAlumno() != null) {
+            dto.setAlumnoId(entity.getAlumno().getId());
+        }
+
+        if (entity.getTarea() != null) {
+            dto.setTareaId(entity.getTarea().getId());
         }
 
         return dto;

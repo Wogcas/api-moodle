@@ -2,6 +2,7 @@ package server.rest.api_moodle.entities;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -11,7 +12,7 @@ public class Asignacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private double nota;
-    private Date fechaPublicacion;
+    private LocalDateTime fechaPublicacion;
 
     @ManyToOne
     @JoinColumn(name = "alumno_id", nullable = false)
@@ -37,11 +38,11 @@ public class Asignacion {
         this.nota = nota;
     }
 
-    public Date getFechaPublicacion() {
+    public LocalDateTime getFechaPublicacion() {
         return fechaPublicacion;
     }
 
-    public void setFechaPublicacion(Date fechaPublicacion) {
+    public void setFechaPublicacion(LocalDateTime fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     }
 
