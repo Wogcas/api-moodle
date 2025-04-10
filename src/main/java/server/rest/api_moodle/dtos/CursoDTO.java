@@ -4,16 +4,16 @@ import java.util.List;
 
 public class CursoDTO {
 
-    private int id;
+    private Integer id;
     private String nombre;
     private List<Integer> alumnosIds;
     private List<Integer> asignacionesIds;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -27,8 +27,8 @@ public class CursoService {
         Curso curso = Adapter.toEntity(cursoDTO);
         cursoRepo.save(curso);
         return true;
-        } catch (Exception e) {
-            throw new RuntimeException("Error en el servidor",e);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error en el servidor",ex);
         }
     }
 

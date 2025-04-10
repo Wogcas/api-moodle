@@ -17,8 +17,13 @@ public class Tarea {
     private LocalDateTime fechaEntrega;
     private LocalDateTime fechaRevision;
 
-    @OneToMany(mappedBy = "tarea")
-    private List<Asignacion> asignaciones;
+    @ManyToOne
+    @JoinColumn(name = "asignacion_id")
+    private Asignacion asignacion;
+
+    @ManyToOne
+    @JoinColumn(name = "alumno_id")
+    private Alumno alumno;
 
     public Tarea(){}
 
@@ -70,11 +75,11 @@ public class Tarea {
         this.fechaRevision = fechaRevision;
     }
 
-    public List<Asignacion> getAsignaciones() {
-        return asignaciones;
+    public Asignacion getAsignacion() {
+        return asignacion;
     }
 
-    public void setAsignaciones(List<Asignacion> asignaciones) {
-        this.asignaciones = asignaciones;
+    public void setAsignacion(Asignacion asignacion) {
+        this.asignacion = asignacion;
     }
 }

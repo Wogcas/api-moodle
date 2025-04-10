@@ -3,19 +3,19 @@ package server.rest.api_moodle.dtos;
 import java.time.LocalDateTime;
 
 public class AsignacionDTO {
-    private int id;
+    private Integer id;
     private String titulo;
     private String descripcion;
     private LocalDateTime fechaLimite;
-    private int alumnoId;
-    private int tareaId;
-    private int cursoId;
+    private Integer alumnoId;
+    private Integer tareaId;
+    private Integer cursoId;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -43,27 +43,27 @@ public class AsignacionDTO {
         this.fechaLimite = fechaLimite;
     }
 
-    public int getAlumnoId() {
+    public Integer getAlumnoId() {
         return alumnoId;
     }
 
-    public void setAlumnoId(int alumnoId) {
+    public void setAlumnoId(Integer alumnoId) {
         this.alumnoId = alumnoId;
     }
 
-    public int getTareaId() {
+    public Integer getTareaId() {
         return tareaId;
     }
 
-    public void setTareaId(int tareaId) {
+    public void setTareaId(Integer tareaId) {
         this.tareaId = tareaId;
     }
 
-    public int getCursoId() {
+    public Integer getCursoId() {
         return cursoId;
     }
 
-    public void setCursoId(int cursoId) {
+    public void setCursoId(Integer cursoId) {
         this.cursoId = cursoId;
     }
 }

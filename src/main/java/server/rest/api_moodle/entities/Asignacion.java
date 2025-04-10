@@ -15,12 +15,8 @@ public class Asignacion {
     private LocalDateTime fechaLimite;
 
     @ManyToOne
-    @JoinColumn(name = "alumno_id", nullable = false)
+    @JoinColumn(name = "alumno_id", nullable = true)
     private Alumno alumno;
-
-    @ManyToOne
-    @JoinColumn(name = "tarea_id", nullable = false)
-    private Tarea tarea;
 
     @ManyToOne
     @JoinColumn(name = "curso_id") // nombre de la columna en la tabla
@@ -64,14 +60,6 @@ public class Asignacion {
 
     public void setAlumno(Alumno alumno) {
         this.alumno = alumno;
-    }
-
-    public Tarea getTarea() {
-        return tarea;
-    }
-
-    public void setTarea(Tarea tarea) {
-        this.tarea = tarea;
     }
 
     public Curso getCurso() {

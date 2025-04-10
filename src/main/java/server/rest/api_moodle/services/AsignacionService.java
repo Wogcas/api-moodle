@@ -35,8 +35,17 @@ public class AsignacionService {
 
     public boolean crearAsignacion(AsignacionDTO asignacionDTO){
         try {
-            Asignacion asignacion = Adapter.toEntity(asignacionDTO);
-            asignacionRepo.save(asignacion);
+            Curso curso = cursoRepo.findById(asignacionDTO.getCursoId())
+                    .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+
+            List<Alumno> alumnos = curso.getAlumnos();
+            for (Alumno alumno : alumnos) {
+                Asignacion asignacion = Adapter.toEntity(asignacionDTO);
+                asignacion.setAlumno(alumno);
+                asignacion.setCurso(curso);
+                asignacionRepo.save(asignacion);
+            }
+
             return true;
         } catch (Exception ex) {
             throw new RuntimeException("Error en el servidor", ex);

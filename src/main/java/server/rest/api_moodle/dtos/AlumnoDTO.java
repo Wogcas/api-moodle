@@ -3,7 +3,7 @@ package server.rest.api_moodle.dtos;
 import java.util.List;
 
 public class AlumnoDTO {
-    private int id;
+    private Integer id;
     private String nombre;
     private String apellido;
     private String email;
@@ -11,11 +11,11 @@ public class AlumnoDTO {
     private List<Integer> cursosIds;
     private List<Integer> asignacionesIds;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -11,7 +11,6 @@ public class Adapter {
     public static Curso toEntity(CursoDTO dto) {
         Curso curso = new Curso();
         curso.setNombre(dto.getNombre());
-        curso.setId(dto.getId());
         return curso;
     }
 
@@ -39,7 +38,6 @@ public class Adapter {
 
     public static Alumno toEntity(AlumnoDTO dto) {
         Alumno alumno = new Alumno();
-        alumno.setId(dto.getId());
         alumno.setNombre(dto.getNombre());
         alumno.setApellido(dto.getApellido());
         alumno.setEmail(dto.getEmail());
@@ -73,7 +71,6 @@ public class Adapter {
 
     public static Maestro toEntity(MaestroDTO dto) {
         Maestro maestro = new Maestro();
-        maestro.setId(dto.getId());
         maestro.setNombre(dto.getNombre());
         maestro.setApellido(dto.getApellido());
         maestro.setEmail(dto.getEmail());
@@ -101,7 +98,6 @@ public class Adapter {
 
     public static Tarea toEntity(TareaDTO dto) {
         Tarea tarea = new Tarea();
-        tarea.setId(dto.getId());
         tarea.setTitulo(dto.getTitulo());
         tarea.setContenido(dto.getContenido());
         tarea.setNota(dto.getNota());
@@ -124,7 +120,6 @@ public class Adapter {
 
     public static Asignacion toEntity(AsignacionDTO dto) {
         Asignacion asignacion = new Asignacion();
-        asignacion.setId(dto.getId());
         asignacion.setTitulo(dto.getTitulo());
         asignacion.setDescripcion(dto.getDescripcion());
         asignacion.setFechaLimite(dto.getFechaLimite());
@@ -141,10 +136,6 @@ public class Adapter {
 
         if (entity.getAlumno() != null) {
             dto.setAlumnoId(entity.getAlumno().getId());
-        }
-
-        if (entity.getTarea() != null) {
-            dto.setTareaId(entity.getTarea().getId());
         }
 
         if (entity.getCurso() != null) {

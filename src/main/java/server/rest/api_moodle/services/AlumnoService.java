@@ -26,15 +26,15 @@ public class AlumnoService {
 
     public boolean crearAlumno(AlumnoDTO alumnoDTO){
         try {
-            boolean alumnoExistente = alumnoRepo.findByEmail(alumnoDTO.getEmail());
+            boolean alumnoExistente = alumnoRepo.existsByEmail(alumnoDTO.getEmail());
             if (alumnoExistente) {
                 throw new Exception("El alumno con este email ya existe en el servidor");
             }
             Alumno alumno = Adapter.toEntity(alumnoDTO);
             alumnoRepo.save(alumno);
             return true;
-        } catch (Exception e) {
-            throw new RuntimeException("Error en el servidor", e);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error en el servidor", ex);
         }
     }
 
