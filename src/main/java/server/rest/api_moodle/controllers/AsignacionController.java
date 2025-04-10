@@ -58,17 +58,6 @@ public class AsignacionController {
         }
     }
 
-    @GetMapping("/tarea/{tareaId}")
-    public ResponseEntity<List<AsignacionDTO>> obtenerAsignacionesPorTarea(@PathVariable int tareaId) {
-        try {
-            List<AsignacionDTO> asignaciones = asignacionServ.obtenerAsignacionesPorTarea(tareaId);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(asignaciones);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.emptyList());
-        }
-    }
-
     @GetMapping("/curso/{cursoId}")
     public ResponseEntity<List<AsignacionDTO>> obtenerAsignacionesPorCurso(@PathVariable int cursoId) {
         try {
@@ -81,9 +70,9 @@ public class AsignacionController {
     }
 
     @PutMapping("/calificar/{asignacionId}")
-    public ResponseEntity<String> calificarAsignacion(@PathVariable int asignacionId, @RequestBody CalificacionDTO calificacionDTO) {
+    public ResponseEntity<String> calificarTarea(@PathVariable int tareaId, @RequestBody CalificacionDTO calificacionDTO) {
         try {
-            boolean calificacionExitosa = asignacionServ.calificarAsignacion(asignacionId, calificacionDTO.getNota());
+            boolean calificacionExitosa = asignacionServ.calificarTarea(tareaId, calificacionDTO.getNota());
             if (calificacionExitosa) {
                 return ResponseEntity.ok("Asignación calificada correctamente");
             }

@@ -18,7 +18,7 @@ public class Curso {
     private List<Alumno> alumnos;
 
     @OneToMany(mappedBy = "curso")
-    private List<Tarea> tareas;
+    private List<Asignacion> asignaciones;
 
     public Curso(){}
 
@@ -50,12 +50,11 @@ public class Curso {
         this.alumnos = alumnos;
     }
 
-    public List<Tarea> getTareas() {
-        return tareas;
+    public List<Asignacion> getAsignaciones() {
+        return asignaciones;
     }
 
-    public void setTareas(List<Tarea> tareas) {
-        this.tareas = tareas;
+    public void setAsignaciones(List<Asignacion> asignaciones) {
+        this.asignaciones = asignaciones;
     }
-
 }

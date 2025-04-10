@@ -4,10 +4,12 @@ import java.time.LocalDateTime;
 
 public class AsignacionDTO {
     private int id;
-    private double nota;
-    private LocalDateTime fechaPublicacion;
+    private String titulo;
+    private String descripcion;
+    private LocalDateTime fechaLimite;
     private int alumnoId;
     private int tareaId;
+    private int cursoId;
 
     public int getId() {
         return id;
@@ -17,20 +19,28 @@ public class AsignacionDTO {
         this.id = id;
     }
 
-    public double getNota() {
-        return nota;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setNota(double nota) {
-        this.nota = nota;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
-    public LocalDateTime getFechaPublicacion() {
-        return fechaPublicacion;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setFechaPublicacion(LocalDateTime fechaPublicacion) {
-        this.fechaPublicacion = fechaPublicacion;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public LocalDateTime getFechaLimite() {
+        return fechaLimite;
+    }
+
+    public void setFechaLimite(LocalDateTime fechaLimite) {
+        this.fechaLimite = fechaLimite;
     }
 
     public int getAlumnoId() {
@@ -47,5 +57,13 @@ public class AsignacionDTO {
 
     public void setTareaId(int tareaId) {
         this.tareaId = tareaId;
+    }
+
+    public int getCursoId() {
+        return cursoId;
+    }
+
+    public void setCursoId(int cursoId) {
+        this.cursoId = cursoId;
     }
 }

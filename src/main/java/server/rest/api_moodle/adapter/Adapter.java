@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 
 public class Adapter {
 
-    public static Curso toEntity(CursoDTO cursoDTO) {
+    public static Curso toEntity(CursoDTO dto) {
         Curso curso = new Curso();
-        curso.setNombre(cursoDTO.getNombre());
-        curso.setId(curso.getId());
+        curso.setNombre(dto.getNombre());
+        curso.setId(dto.getId());
         return curso;
     }
 
@@ -27,11 +27,11 @@ public class Adapter {
             dto.setAlumnosIds(alumnosIds);
         }
 
-        if (entity.getTareas() != null) {
-            List<Integer> tareasIds = entity.getTareas().stream()
-                    .map(Tarea::getId)
+        if (entity.getAsignaciones() != null) {
+            List<Integer> asignacionesIds = entity.getAsignaciones().stream()
+                    .map(Asignacion::getId)
                     .collect(Collectors.toList());
-            dto.setTareasIds(tareasIds);
+            dto.setAsignacionesIds(asignacionesIds);
         }
 
         return dto;
@@ -103,7 +103,8 @@ public class Adapter {
         Tarea tarea = new Tarea();
         tarea.setId(dto.getId());
         tarea.setTitulo(dto.getTitulo());
-        tarea.setDescripcion(dto.getDescripcion());
+        tarea.setContenido(dto.getContenido());
+        tarea.setNota(dto.getNota());
         tarea.setFechaEntrega(dto.getFechaEntrega());
         tarea.setFechaRevision(dto.getFechaRevision());
         return tarea;
@@ -113,20 +114,10 @@ public class Adapter {
         TareaDTO dto = new TareaDTO();
         dto.setId(entity.getId());
         dto.setTitulo(entity.getTitulo());
-        dto.setDescripcion(entity.getDescripcion());
+        dto.setContenido(entity.getContenido());
+        dto.setNota(entity.getNota());
         dto.setFechaEntrega(entity.getFechaEntrega());
         dto.setFechaRevision(entity.getFechaRevision());
-
-        if (entity.getCurso() != null) {
-            dto.setCursoId(entity.getCurso().getId());
-        }
-
-        if (entity.getAsignaciones() != null) {
-            List<Integer> asignacionesIds = entity.getAsignaciones().stream()
-                    .map(Asignacion::getId)
-                    .collect(Collectors.toList());
-            dto.setAsignacionesIds(asignacionesIds);
-        }
 
         return dto;
     }
@@ -134,16 +125,19 @@ public class Adapter {
     public static Asignacion toEntity(AsignacionDTO dto) {
         Asignacion asignacion = new Asignacion();
         asignacion.setId(dto.getId());
-        asignacion.setNota(dto.getNota());
-        asignacion.setFechaPublicacion(dto.getFechaPublicacion());
+        asignacion.setTitulo(dto.getTitulo());
+        asignacion.setDescripcion(dto.getDescripcion());
+        asignacion.setFechaLimite(dto.getFechaLimite());
+
         return asignacion;
     }
 
     public static AsignacionDTO toDTO(Asignacion entity) {
         AsignacionDTO dto = new AsignacionDTO();
         dto.setId(entity.getId());
-        dto.setNota(entity.getNota());
-        dto.setFechaPublicacion(entity.getFechaPublicacion());
+        dto.setTitulo(entity.getTitulo());
+        dto.setDescripcion(entity.getDescripcion());
+        dto.setFechaLimite(entity.getFechaLimite());
 
         if (entity.getAlumno() != null) {
             dto.setAlumnoId(entity.getAlumno().getId());
@@ -151,6 +145,10 @@ public class Adapter {
 
         if (entity.getTarea() != null) {
             dto.setTareaId(entity.getTarea().getId());
+        }
+
+        if (entity.getCurso() != null) {
+            dto.setCursoId(entity.getCurso().getId());
         }
 
         return dto;

@@ -3,7 +3,6 @@ package server.rest.api_moodle.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "asignaciones")
@@ -11,8 +10,9 @@ public class Asignacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private double nota;
-    private LocalDateTime fechaPublicacion;
+    private String titulo;
+    private String descripcion;
+    private LocalDateTime fechaLimite;
 
     @ManyToOne
     @JoinColumn(name = "alumno_id", nullable = false)
@@ -22,6 +22,10 @@ public class Asignacion {
     @JoinColumn(name = "tarea_id", nullable = false)
     private Tarea tarea;
 
+    @ManyToOne
+    @JoinColumn(name = "curso_id") // nombre de la columna en la tabla
+    private Curso curso;
+
     public int getId() {
         return id;
     }
@@ -30,20 +34,28 @@ public class Asignacion {
         this.id = id;
     }
 
-    public double getNota() {
-        return nota;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setNota(double nota) {
-        this.nota = nota;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
-    public LocalDateTime getFechaPublicacion() {
-        return fechaPublicacion;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setFechaPublicacion(LocalDateTime fechaPublicacion) {
-        this.fechaPublicacion = fechaPublicacion;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public LocalDateTime getFechaLimite() {
+        return fechaLimite;
+    }
+
+    public void setFechaLimite(LocalDateTime fechaLimite) {
+        this.fechaLimite = fechaLimite;
     }
 
     public Alumno getAlumno() {
@@ -60,5 +72,13 @@ public class Asignacion {
 
     public void setTarea(Tarea tarea) {
         this.tarea = tarea;
+    }
+
+    public Curso getCurso() {
+        return curso;
+    }
+
+    public void setCurso(Curso curso) {
+        this.curso = curso;
     }
 }

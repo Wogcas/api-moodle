@@ -1,17 +1,16 @@
 package server.rest.api_moodle.dtos;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class TareaDTO {
 
     private int id;
     private String titulo;
-    private String descripcion;
+    private String contenido;
+    private Double nota;
     private LocalDateTime fechaEntrega;
     private LocalDateTime fechaRevision;
-    private int cursoId;
-    private List<Integer> asignacionesIds;
+    private int asignacionId;
 
     public int getId() {
         return id;
@@ -29,12 +28,20 @@ public class TareaDTO {
         this.titulo = titulo;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getContenido() {
+        return contenido;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setContenido(String contenido) {
+        this.contenido = contenido;
+    }
+
+    public Double getNota() {
+        return nota;
+    }
+
+    public void setNota(Double nota) {
+        this.nota = nota;
     }
 
     public LocalDateTime getFechaEntrega() {
@@ -53,20 +60,11 @@ public class TareaDTO {
         this.fechaRevision = fechaRevision;
     }
 
-    public int getCursoId() {
-        return cursoId;
+    public int getAsignacionId() {
+        return asignacionId;
     }
 
-    public void setCursoId(int cursoId) {
-        this.cursoId = cursoId;
+    public void setAsignacionId(int asignacionId) {
+        this.asignacionId = asignacionId;
     }
-
-    public List<Integer> getAsignacionesIds() {
-        return asignacionesIds;
-    }
-
-    public void setAsignacionesIds(List<Integer> asignacionesIds) {
-        this.asignacionesIds = asignacionesIds;
-    }
-
 }

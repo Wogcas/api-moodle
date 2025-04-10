@@ -15,7 +15,6 @@ import server.rest.api_moodle.repositorys.TareaRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,28 +35,11 @@ public class AsignacionService {
 
     public boolean crearAsignacion(AsignacionDTO asignacionDTO){
         try {
-            Alumno alumno = alumnoRepo.findById(asignacionDTO.getAlumnoId())
-                    .orElseThrow(() -> new Exception("El alumno no existe"));
-
-            Tarea tarea = tareaRepo.findById(asignacionDTO.getTareaId())
-                    .orElseThrow(() -> new Exception("La tarea no existe"));
-
-            boolean alumnoEnCurso = alumno.getCursos().stream()
-                    .anyMatch(curso -> curso.getId() == tarea.getCurso().getId());
-
-            if (!alumnoEnCurso) {
-                throw new Exception("El alumno no está inscrito en el curso de esta tarea");
-            }
-
             Asignacion asignacion = Adapter.toEntity(asignacionDTO);
-            asignacion.setAlumno(alumno);
-            asignacion.setTarea(tarea);
-            asignacion.setFechaPublicacion(LocalDateTime.now());
-
             asignacionRepo.save(asignacion);
             return true;
-        } catch (Exception e) {
-            throw new RuntimeException("Error en el servidor", e);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error en el servidor", ex);
         }
     }
 
@@ -78,23 +60,8 @@ public class AsignacionService {
             return asignaciones.stream()
                     .map(Adapter::toDTO)
                     .collect(Collectors.toList());
-        } catch (Exception e) {
-            throw new RuntimeException("Error al obtener asignaciones del alumno: " + e.getMessage(), e);
-        }
-    }
-
-    public List<AsignacionDTO> obtenerAsignacionesPorTarea(int tareaId) {
-        try {
-            Tarea tarea = tareaRepo.findById(tareaId)
-                    .orElseThrow(() -> new Exception("La tarea no existe"));
-
-            List<Asignacion> asignaciones = asignacionRepo.findByTarea(tarea);
-
-            return asignaciones.stream()
-                    .map(Adapter::toDTO)
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            throw new RuntimeException("Error al obtener asignaciones de la tarea: " + e.getMessage(), e);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al obtener asignaciones del alumno: " + ex.getMessage(), ex);
         }
     }
 
@@ -103,36 +70,31 @@ public class AsignacionService {
             Curso curso = cursoRepo.findById(cursoId)
                     .orElseThrow(() -> new Exception("El curso no existe"));
 
-            List<Tarea> tareas = tareaRepo.findByCurso(curso);
-
-            List<Asignacion> asignaciones = new ArrayList<>();
-            for (Tarea tarea : tareas) {
-                asignaciones.addAll(asignacionRepo.findByTarea(tarea));
-            }
+            List<Asignacion> asignaciones = asignacionRepo.findByCurso(curso);
 
             return asignaciones.stream()
                     .map(Adapter::toDTO)
                     .collect(Collectors.toList());
-        } catch (Exception e) {
-            throw new RuntimeException("Error al obtener asignaciones del curso: " + e.getMessage(), e);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al obtener asignaciones del curso: " + ex.getMessage(), ex);
         }
     }
 
-    public boolean calificarAsignacion(int asignacionId, double nota) {
+    public boolean calificarTarea(int tareaId, double nota) {
         try {
-            Asignacion asignacion = asignacionRepo.findById(asignacionId)
+            Tarea tarea = tareaRepo.findById(tareaId)
                     .orElseThrow(() -> new Exception("La asignación no existe"));
 
             if (nota < 0 || nota > 10) {
                 throw new Exception("La nota debe estar entre 0 y 10");
             }
 
-            asignacion.setNota(nota);
-            asignacionRepo.save(asignacion);
+            tarea.setNota(nota);
+            tareaRepo.save(tarea);
 
             return true;
-        } catch (Exception e) {
-            throw new RuntimeException("Error al calificar la asignación: " + e.getMessage(), e);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al calificar la asignación: " + ex.getMessage(), ex);
         }
     }
 

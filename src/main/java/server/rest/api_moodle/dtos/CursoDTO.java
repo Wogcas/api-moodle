@@ -7,7 +7,7 @@ public class CursoDTO {
     private int id;
     private String nombre;
     private List<Integer> alumnosIds;
-    private List<Integer> tareasIds;
+    private List<Integer> asignacionesIds;
 
     public int getId() {
         return id;
@@ -33,11 +33,11 @@ public class CursoDTO {
         this.alumnosIds = alumnosIds;
     }
 
-    public List<Integer> getTareasIds() {
-        return tareasIds;
+    public List<Integer> getAsignacionesIds() {
+        return asignacionesIds;
     }
 
-    public void setTareasIds(List<Integer> tareasIds) {
-        this.tareasIds = tareasIds;
+    public void setAsignacionesIds(List<Integer> asignacionesIds) {
+        this.asignacionesIds = asignacionesIds;
     }
 }

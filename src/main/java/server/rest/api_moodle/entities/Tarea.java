@@ -3,7 +3,6 @@ package server.rest.api_moodle.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -13,13 +12,10 @@ public class Tarea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String titulo;
-    private String descripcion;
+    private String contenido;
+    private double nota;
     private LocalDateTime fechaEntrega;
     private LocalDateTime fechaRevision;
-
-    @ManyToOne
-    @JoinColumn(name = "curso_id", nullable = false)
-    private Curso curso;
 
     @OneToMany(mappedBy = "tarea")
     private List<Asignacion> asignaciones;
@@ -42,12 +38,20 @@ public class Tarea {
         this.titulo = titulo;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getContenido() {
+        return contenido;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setContenido(String contenido) {
+        this.contenido = contenido;
+    }
+
+    public double getNota() {
+        return nota;
+    }
+
+    public void setNota(double nota) {
+        this.nota = nota;
     }
 
     public LocalDateTime getFechaEntrega() {
@@ -64,14 +68,6 @@ public class Tarea {
 
     public void setFechaRevision(LocalDateTime fechaRevision) {
         this.fechaRevision = fechaRevision;
-    }
-
-    public Curso getCurso() {
-        return curso;
-    }
-
-    public void setCurso(Curso curso) {
-        this.curso = curso;
     }
 
     public List<Asignacion> getAsignaciones() {

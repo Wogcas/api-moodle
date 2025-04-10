@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.rest.api_moodle.adapter.Adapter;
 import server.rest.api_moodle.dtos.TareaDTO;
-import server.rest.api_moodle.entities.Curso;
+import server.rest.api_moodle.entities.Asignacion;
 import server.rest.api_moodle.entities.Tarea;
-import server.rest.api_moodle.repositorys.CursoRepository;
+import server.rest.api_moodle.repositorys.AsignacionRepository;
 import server.rest.api_moodle.repositorys.TareaRepository;
 
 import java.util.List;
@@ -19,19 +19,18 @@ public class TareaService {
     private TareaRepository tareaRepo;
 
     @Autowired
-    private CursoRepository cursoRepo;
+    private AsignacionRepository asignacionRepo;
 
-    public boolean crearTarea(TareaDTO tareaDTO){
+    public boolean enviarTarea(TareaDTO tareaDTO){
         try {
-            Curso curso = cursoRepo.findById(tareaDTO.getCursoId())
-                    .orElseThrow(() -> new Exception("El curso no existe"));
+            Asignacion asignacion = asignacionRepo.findById(tareaDTO.getAsignacionId())
+                    .orElseThrow(() -> new Exception("La asignacion no existe"));
 
             Tarea tarea = Adapter.toEntity(tareaDTO);
-            tarea.setCurso(curso);
             tareaRepo.save(tarea);
             return true;
-        } catch (Exception e) {
-            throw new RuntimeException("Error en el servidor", e);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error en el servidor", ex);
         }
     }
 
@@ -41,4 +40,33 @@ public class TareaService {
                 .map(Adapter::toDTO)
                 .collect(Collectors.toList());
     }
+
+    public TareaDTO obtenerTareaPorId(int id) {
+        try {
+            Tarea tarea = tareaRepo.findById(id)
+                    .orElseThrow(() -> new Exception("La tarea no existe"));
+            return Adapter.toDTO(tarea);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al obtener asignaciones de la tarea: " + e.getMessage(), e);
+        }
+    }
+
+    public boolean actualizarEnvioTarea(int id, TareaDTO nuevoEnvioTarea){
+        try {
+            Tarea tareaExistente = tareaRepo.findById(id)
+                    .orElseThrow(() -> new Exception("La tarea no existe"));
+
+            tareaExistente.setTitulo(nuevoEnvioTarea.getTitulo());
+            tareaExistente.setContenido(nuevoEnvioTarea.getContenido());
+            tareaExistente.setFechaEntrega(nuevoEnvioTarea.getFechaEntrega());
+            tareaRepo.save(tareaExistente);
+
+            return true;
+        } catch(Exception ex) {
+            throw new RuntimeException("Error en el servidor", ex);
+        }
+    }
+
+
+
 }
