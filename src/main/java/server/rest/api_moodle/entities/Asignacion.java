@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+
+//ASIGNACION. Se refiere a la actividad que publica el maestro
 @Entity
 @Table(name = "asignaciones")
 public class Asignacion {

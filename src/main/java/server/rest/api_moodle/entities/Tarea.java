@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+//TAREA. Se refiere a la actividad que realiza el estudiante en respuesta a su asignación
 @Entity
 @Table(name = "tareas")
 public class Tarea {
