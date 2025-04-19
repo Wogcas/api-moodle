@@ -1,6 +1,7 @@
 package server.rest.api_moodle.entities;
 
 import jakarta.persistence.*;
+import server.rest.api_moodle.enums.AprobacionParental;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +19,12 @@ public class Tarea {
     private double nota;
     private LocalDateTime fechaEntrega;
     private LocalDateTime fechaRevision;
+
+    @Enumerated(EnumType.STRING)
+    private AprobacionParental estadoAprobacion = AprobacionParental.NO_REQUIERE;
+    
+    private LocalDateTime fechaSolicitudAprobacion; // Cuándo se solicitó la aprobación
+    private LocalDateTime fechaRespuestaAprobacion; // Cuándo respondió el padre/tutor
 
     @ManyToOne
     @JoinColumn(name = "asignacion_id")

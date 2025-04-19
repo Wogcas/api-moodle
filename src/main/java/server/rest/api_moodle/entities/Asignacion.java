@@ -16,6 +16,9 @@ public class Asignacion {
     private String descripcion;
     private LocalDateTime fechaLimite;
 
+    private boolean requiereAprobacionParental;
+    private int diasEsperaAprobacion;
+
     @ManyToOne
     @JoinColumn(name = "alumno_id", nullable = true)
     private Alumno alumno;
