@@ -2,7 +2,9 @@ package server.rest.api_moodle.test;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import server.rest.api_moodle.moodle.MoodleClient;
@@ -22,6 +24,12 @@ public class AssignNotificationTask {
 
     @Autowired
     private MoodleClient moodleClient;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Value("${spring.rabbitmq.exchange.name}")
+    private String exchange;
 
     private Instant lastPollTime = Instant.now().minus(Duration.ofMinutes(15));
 
@@ -145,12 +153,30 @@ public class AssignNotificationTask {
                         assignment.get("name"), submission.get("userid"));
 
                 // El envío es nuevo, enviar a RabbitMQ
-//                sendToRabbitMQ(assignment, submission);
-
-
+                sendToRabbitMQ(assignment, submission);
             }
         } catch (Exception ex) {
             log.error("Error processing submission: {}", ex.getMessage(), ex);
+        }
+    }
+
+    private void sendToRabbitMQ(Map<String, Object> assignment, Map<String, Object> submission) {
+        try {
+            Map<String, Object> messagePayload = new HashMap<>();
+            messagePayload.put("assignmentId", assignment.get("id"));
+            messagePayload.put("assignmentName", assignment.get("name"));
+            messagePayload.put("submissionId", submission.get("id"));
+            messagePayload.put("userId", submission.get("userid"));
+            messagePayload.put("timeModified", submission.get("timemodified"));
+
+            // Enviar el mensaje al exchange "default_exchange" con una routing key "#"
+            rabbitTemplate.convertAndSend(exchange, "#", messagePayload);
+
+            log.info("Sent new submission for assignment '{}' (ID: {}) by user {} to RabbitMQ.",
+                    assignment.get("name"), assignment.get("id"), submission.get("userid"));
+
+        } catch (Exception ex) {
+            log.error("Error sending submission to RabbitMQ: {}", ex.getMessage(), ex);
         }
     }
 }
