@@ -2,7 +2,7 @@ package server.rest.api_moodle.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import server.rest.api_moodle.adapter.Adapter;
+import server.rest.api_moodle.moodle.Adapter;
 import server.rest.api_moodle.dtos.CursoDTO;
 import server.rest.api_moodle.dtos.MaestroDTO;
 import server.rest.api_moodle.entities.Curso;

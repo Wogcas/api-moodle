@@ -1,4 +1,4 @@
-package server.rest.api_moodle.adapter;
+package server.rest.api_moodle.moodle;
 
 import server.rest.api_moodle.dtos.*;
 import server.rest.api_moodle.entities.*;

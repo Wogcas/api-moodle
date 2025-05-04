@@ -2,7 +2,7 @@ package server.rest.api_moodle.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import server.rest.api_moodle.adapter.Adapter;
+import server.rest.api_moodle.moodle.Adapter;
 import server.rest.api_moodle.dtos.AsignacionDTO;
 import server.rest.api_moodle.entities.Alumno;
 import server.rest.api_moodle.entities.Asignacion;
@@ -13,8 +13,6 @@ import server.rest.api_moodle.repositorys.AsignacionRepository;
 import server.rest.api_moodle.repositorys.CursoRepository;
 import server.rest.api_moodle.repositorys.TareaRepository;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

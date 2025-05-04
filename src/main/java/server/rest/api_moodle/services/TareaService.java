@@ -2,7 +2,7 @@ package server.rest.api_moodle.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import server.rest.api_moodle.adapter.Adapter;
+import server.rest.api_moodle.moodle.Adapter;
 import server.rest.api_moodle.dtos.TareaDTO;
 import server.rest.api_moodle.entities.Asignacion;
 import server.rest.api_moodle.entities.Tarea;
