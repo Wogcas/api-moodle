@@ -28,8 +28,16 @@ public class MoodleTestService {
         return moodleClient.executeGetRequestForList("core_course_get_courses", params, Object.class);
     }
 
+    public Object getAssignmentSubmissions(Map<String, String> params) {
+        return moodleClient.executeGetRequest("mod_assign_get_submissions", params, Object.class);
+    }
+
     public List<Object> getUserCourses(Map<String, String> params){
         return moodleClient.executeGetRequestForList("core_enrol_get_users_courses", params, Object.class);
+    }
+
+    public List<Object> getCourseAssignments(Map<String, String> params) {
+        return moodleClient.executeGetRequestForList("mod_assign_get_assignments", params, Object.class);
     }
 
     public ReportGradeCourseFromStudentInfo getFinalGradeFromCourse(Map<String, String> params){

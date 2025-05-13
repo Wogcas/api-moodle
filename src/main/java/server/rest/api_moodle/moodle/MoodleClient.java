@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static java.rmi.server.LogStream.log;
+
 @Component
 public class MoodleClient {
 
@@ -70,6 +72,7 @@ public class MoodleClient {
                     null,
                     String.class
             );
+            System.out.println("Respuesta de Moodle: " + response.getBody());
             return objectMapper.readValue(response.getBody(), new TypeReference<List<T>>() {});
         } catch (IOException ex) {
             throw new MoodleApiException("Failed to execute Moodle API GET request for list", ex.getMessage());

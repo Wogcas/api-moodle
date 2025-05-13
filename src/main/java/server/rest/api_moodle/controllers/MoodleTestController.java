@@ -122,9 +122,22 @@ public class MoodleTestController {
         return ResponseEntity.ok(status);
     }
 
-    @GetMapping("/users/{userId}/assignments")
-    public ResponseEntity<List<Object>> getAssignments(@PathVariable Integer userId){
-        List<Object> assignments = new ArrayList<>();
-        return ResponseEntity.ok(assignments);
+    @GetMapping("/course/{courseId}/assignments")
+    public ResponseEntity <List<Object>> getCourseAssignments(@PathVariable Integer courseId) {
+        Map<String, String> params = new HashMap<>();
+        params.put("courseid", String.valueOf(courseId));
+        List<Object> courseAssignments = moodleTestService.getCourseAssignments(params);
+        return ResponseEntity.ok(courseAssignments);
+    }
+
+    @GetMapping("/user/{userId}/submissions/assignment/{assignmentId}")
+    public ResponseEntity<Object> getAssignmentSubmissionsForUser(
+            @PathVariable Integer userId,
+            @PathVariable Integer assignmentId) {
+        Map<String, String> params = new HashMap<>();
+        params.put("userid", String.valueOf(userId));
+        params.put("assignmentids[0]", String.valueOf(assignmentId));
+        Object submissions = moodleTestService.getAssignmentSubmissions(params);
+        return ResponseEntity.ok(submissions);
     }
 }
