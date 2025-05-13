@@ -16,6 +16,7 @@ import server.rest.api_moodle.test.MoodleTestService;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,5 +120,11 @@ public class MoodleTestController {
         status.put("currentTime", formatter.format(Instant.now()));
 
         return ResponseEntity.ok(status);
+    }
+
+    @GetMapping("/users/{userId}/assignments")
+    public ResponseEntity<List<Object>> getAssignments(@PathVariable Integer userId){
+        List<Object> assignments = new ArrayList<>();
+        return ResponseEntity.ok(assignments);
     }
 }
