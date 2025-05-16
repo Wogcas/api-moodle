@@ -28,18 +28,7 @@ export class MoodleService  {
             );
         }
     }
-    async executeGetRequestForList<T>(wsfunction: string, params: Record<string, any>): Promise<T[]> {
-         const uri = this.buildUri(wsfunction, params);
-         try {
-            const response = await lastValueFrom(this.httpService.get(uri));
-            return response.data as T[];
-        } catch (error) {
-             throw new HttpException(
-                `Moodle API GET request failed: ${error.message}`,
-                HttpStatus.INTERNAL_SERVER_ERROR,
-            );
-        }
-    }
+ 
     async executePostRequest<T>(wsfunction: string, params: Record<string, any>): Promise<T> {
         const body = new URLSearchParams();
         body.set('wstoken', this.MoodleToken);
