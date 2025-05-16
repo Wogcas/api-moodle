@@ -1,11 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { lastValueFrom, Observable } from "rxjs";
+import { lastValueFrom } from "rxjs";
 import { HttpService } from '@nestjs/axios';
-//import { MoodleClient } from "src/interfaces/moodle-client.interface";
 
 @Injectable()
-export class MoodleConfig  {
+export class MoodleService  {
     private readonly MoodleURL: string;
     private readonly MoodleToken: string;
 
@@ -78,7 +77,5 @@ export class MoodleConfig  {
         }
         return fullUri;
     }
-
-
 
 }
