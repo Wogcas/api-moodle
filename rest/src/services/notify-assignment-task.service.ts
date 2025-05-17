@@ -45,6 +45,7 @@ export class NotifyAssignmentTaskService {
         this.checkNewSubmissions();
     }
 
+    //ESTE VA SERÁ UTIL PARA TODO EL API REST NO SOLO LA TAREA PROGRAMADA!
     private async getActiveAssignments(): Promise<any[]> {
         const params: Record<string, any> = {};
         try {

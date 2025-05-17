@@ -8,6 +8,7 @@ import { enviroment } from './config/enviroment';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RabbitMQService } from './config/rabbitmq.service';
 import { NotifyAssignmentTaskService } from './services/notify-assignment-task.service';
+import { MapperService } from './utils/mapper-dto.service';
 
 @Module({
   imports: [
@@ -21,6 +22,6 @@ import { NotifyAssignmentTaskService } from './services/notify-assignment-task.s
     ScheduleModule.forRoot(), 
   ],
   controllers: [AppController],
-  providers: [AppService, MoodleService, RabbitMQService, NotifyAssignmentTaskService],
+  providers: [AppService, MoodleService, RabbitMQService, NotifyAssignmentTaskService, MapperService],
 })
 export class AppModule {}
