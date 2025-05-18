@@ -31,7 +31,7 @@ export class AppController {
   }
 
   @Get('user/:userId/course/:courseId/grades')
-  async getCourseGrades(
+  async getCourseGradesFromStudent(
     @Param('userId') userId: number,
     @Param('courseId') courseId: number
   ): Promise<ReportStudentGrades[]> {
@@ -39,6 +39,18 @@ export class AppController {
       return await this.appService.getGradeFromCourse(userId, courseId);
     } catch (error) {
       throw new HttpException('Error retrieving course grades', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  // Done
+  @Get('course/:courseId/grades-all')
+  async getAllCourseGrades(
+    @Param('courseId') courseId: number
+  ): Promise<ReportStudentGrades[]> {
+    try {
+      return await this.appService.getGradeFromCourseWithDetails(courseId);
+    } catch (error) {
+      throw new HttpException('Error retrieving all course grades', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -114,17 +126,6 @@ export class AppController {
       return await this.notifyAssignmentTaskService.manualCheck();
     } catch (error) {
       throw new HttpException('Error retrieving check', HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  @Get('user/:userId')
-  async getUser(@Param('userId') userId: number): Promise<any> {
-    try {
-      const response = await this.appService.getUserInfo(userId);
-      console.log('Response:', response);
-      return response;
-    } catch (error) {
-      throw new HttpException('Error retrieving user info', HttpStatus.BAD_REQUEST);
     }
   }
 

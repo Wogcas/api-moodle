@@ -62,6 +62,41 @@ export class AppService {
     }
   }
 
+  async getGradeFromCourseWithDetails(courseId: number): Promise<ReportStudentGrades[]> {
+    try {
+      const gradeReportParams = { courseid: courseId };
+      const rawGradeReportResponse: any = await this.moodleService.executeGetRequest('gradereport_user_get_grades_table', gradeReportParams);
+
+      const allCourses: CourseInfo[] = await this.getCourses();
+      const courseDetails = allCourses.find((c) => Number(c.id) === Number(courseId));
+      const courseidnumber = courseDetails?.idnumber ?? '';
+
+      const enrolledUsers = await this.getEnrolledUsers(courseId);
+
+      const mappedGradesReports: ReportStudentGrades[] = this.mapperService.mapReportOfGrades(rawGradeReportResponse);
+
+      const finalReports: ReportStudentGrades[] = mappedGradesReports.map(report => {
+        const user = enrolledUsers.find((u: any) => Number(u.id) === Number(report.userid));
+        const reportWithDetails: ReportStudentGrades = {
+          ...report,
+          courseidnumber: courseidnumber,
+          useremail: user?.email ?? '',
+        };
+        return reportWithDetails;
+      });
+
+      return finalReports;
+    } catch (error) {
+      if (error?.errorcode) {
+        if (error.errorcode === 'accessexception') {
+          throw new InternalServerErrorException('Permission denied to retrieve data from Moodle.');
+        }
+        throw error;
+      }
+      throw new InternalServerErrorException('Error retrieving course grades with details');
+    }
+  }
+
   async getCoursesByStudentId(userId: number): Promise<CourseInfo[]> {
     try {
       const params = { userid: userId };
@@ -151,17 +186,6 @@ export class AppService {
       return filteredAssignments;
     } catch (error) {
       throw new InternalServerErrorException('Error retrieving assignments between dates');
-    }
-  }
-
-  async getUserInfo(userId: number): Promise<any> {
-    try {
-      const params = { userids: [userId] };
-      const response: any = await this.moodleService.executeGetRequest('core_user_get_users', params);
-      console.log('User info:', response.users[0]);
-      return response.users[0] || null; // Retornamos el primer usuario o null si no existe
-    } catch (error) {
-      throw new InternalServerErrorException('Error retrieving user info');
     }
   }
 

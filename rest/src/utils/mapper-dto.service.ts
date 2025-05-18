@@ -142,17 +142,28 @@ export class MapperService {
                 ? tabledata
                     .filter((item: any) => item.itemname && item.itemname.content)
                     .map((item: any) => {
-                        const itemname = item.itemname.content
+                        // Limpia etiquetas HTML en itemname
+                        let itemname = item.itemname.content
                             ? item.itemname.content.replace(/<[^>]*>/g, '').trim()
                             : '';
+                        itemname = itemname.replace(/\s+/g, ' ');
+                        itemname = itemname.replace(/^Assignment\s*/, 'Assignment ');
+                        itemname = itemname.replace(/^Calculated grade\s*/, 'Calculated grade ');
+                        itemname = itemname.replace(/^Course total\s*/, 'Course total ');
+                        itemname = itemname.replace(/^Calculated grade\s*Course total$/, 'Calculated grade Course total');
 
                         let grade: number | string | null = null;
                         if (item.grade && typeof item.grade.content === 'string') {
-                            const parsed = parseFloat(item.grade.content.replace(',', '.'));
-                            grade = isNaN(parsed) ? item.grade.content : parsed;
+                            const cleanGrade = item.grade.content.replace(',', '.').trim();
+                            if (cleanGrade === '-' || cleanGrade === '') {
+                                grade = '-';
+                            } else {
+                                const parsed = parseFloat(cleanGrade);
+                                grade = isNaN(parsed) ? cleanGrade : parsed;
+                            }
                         }
                         return {
-                            itemname,
+                            itemname: itemname.trim(),
                             grade
                         };
                     })
@@ -167,6 +178,60 @@ export class MapperService {
         });
     }
 
+
+    // Modificado para incluir email del usuario y idnumber del curso recibidos como argumentos
+    mapReportOfAllGrades(
+        rawReportOfGrades: any,
+        { courseidnumber, useremail }: { courseidnumber: string; useremail: string }
+    ): ReportStudentGrades[] {
+        if (!rawReportOfGrades || !Array.isArray(rawReportOfGrades.tables)) {
+            return [];
+        }
+
+        return rawReportOfGrades.tables.map((table: any) => {
+            const { courseid, userid, userfullname, tabledata } = table;
+
+            const gradeItems = Array.isArray(tabledata)
+                ? tabledata
+                    .filter((item: any) => item.itemname && item.itemname.content)
+                    .map((item: any) => {
+                        let itemname = item.itemname.content
+                            ? item.itemname.content.replace(/<[^>]*>/g, '').trim()
+                            : '';
+                        itemname = itemname.replace(/\s+/g, ' ');
+                        itemname = itemname.replace(/^Assignment\s*/, 'Assignment ');
+                        itemname = itemname.replace(/^Calculated grade\s*/, 'Calculated grade ');
+                        itemname = itemname.replace(/^Course total\s*/, 'Course total ');
+                        itemname = itemname.replace(/^Calculated grade\s*Course total$/, 'Calculated grade Course total');
+
+                        let grade: number | string | null = null;
+                        if (item.grade && typeof item.grade.content === 'string') {
+                            const cleanGrade = item.grade.content.replace(',', '.').trim();
+                            if (cleanGrade === '-' || cleanGrade === '') {
+                                grade = '-';
+                            } else {
+                                const parsed = parseFloat(cleanGrade);
+                                grade = isNaN(parsed) ? cleanGrade : parsed;
+                            }
+                        }
+                        return {
+                            itemname: itemname.trim(),
+                            grade
+                        };
+                    })
+                : [];
+
+            return {
+                courseid,
+                userid,
+                userfullname,
+                useremail,
+                courseidnumber,
+                gradeItems,
+            };
+        });
+    }
+  
 
     private unixTimestampMapper(timestamp: number): Date {
         return new Date(timestamp * 1000);
