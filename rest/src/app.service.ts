@@ -62,6 +62,7 @@ export class AppService {
     }
   }
 
+
   async getGradeFromCourseWithDetails(courseId: number): Promise<ReportStudentGrades[]> {
     try {
       const gradeReportParams = { courseid: courseId };
@@ -73,24 +74,37 @@ export class AppService {
 
       const enrolledUsers = await this.getEnrolledUsers(courseId);
 
+      let teacheremail = '';
+      const teacherUser = enrolledUsers.find((user: any) =>
+        Array.isArray(user.roles) && user.roles.some((role: any) =>
+          role.shortname === 'editingteacher' || role.shortname === 'teacher' || role.shortname === 'manager'
+        )
+      );
+      if (teacherUser) {
+        teacheremail = teacherUser.email ?? '';
+      }
+
       const mappedGradesReports: ReportStudentGrades[] = this.mapperService.mapReportOfGrades(rawGradeReportResponse);
 
       const finalReports: ReportStudentGrades[] = mappedGradesReports.map(report => {
-        const user = enrolledUsers.find((u: any) => Number(u.id) === Number(report.userid));
-        const reportWithDetails: ReportStudentGrades = {
+        const studentUser = enrolledUsers.find((u: any) => Number(u.id) === Number(report.userid));
+        const studentemail = studentUser?.email ?? '';
+        const studentroles = studentUser?.roles?.map((r: any) => r.shortname) ?? [];
+        return {
           ...report,
           courseidnumber: courseidnumber,
-          useremail: user?.email ?? '',
+          useremail: studentemail,
+          teacheremail: teacheremail,
+          userroles: studentroles,
         };
-        return reportWithDetails;
       });
 
       return finalReports;
     } catch (error) {
-      if (error?.errorcode) {
-        if (error.errorcode === 'accessexception') {
-          throw new InternalServerErrorException('Permission denied to retrieve data from Moodle.');
-        }
+      if (error?.errorcode === 'accessexception') {
+        throw new InternalServerErrorException('Permission denied to retrieve data from Moodle.');
+      }
+      if (error instanceof NotFoundException) {
         throw error;
       }
       throw new InternalServerErrorException('Error retrieving course grades with details');

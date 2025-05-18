@@ -91,13 +91,21 @@ export class MapperService {
                 lastname: rawUser.lastname,
                 fullname: rawUser.fullname,
                 email: rawUser.email,
-                enrolledcourses: []
+                enrolledcourses: [],
+                roles: [],
             };
             if (rawUser.enrolledcourses && Array.isArray(rawUser.enrolledcourses)) {
                 mappedUser.enrolledcourses = rawUser.enrolledcourses.map((rawCourse: any) => ({
                     id: rawCourse.id,
                     fullname: rawCourse.fullname,
                     shortname: rawCourse.shortname
+                }));
+            }
+            if (rawUser.roles && Array.isArray(rawUser.roles)) {
+                mappedUser.roles = rawUser.roles.map((rawRole: any) => ({
+                    roleid: typeof rawRole?.roleid === 'number' ? rawRole.roleid : 0,
+                    shortname: typeof rawRole?.shortname === 'string' ? rawRole.shortname : '', 
+                    
                 }));
             }
             return mappedUser;
@@ -111,7 +119,7 @@ export class MapperService {
         return rawAssignments.map(rawAssignment => {
 
             const cleanIntro = rawAssignment.intro
-                ? rawAssignment.intro.replace(/<[^>]*>/g, '') // Si intro existe, remueve las etiquetas HTML
+                ? rawAssignment.intro.replace(/<[^>]*>/g, '') 
                 : '';
 
             const mappedAssignment: AssignmentInfo = {
@@ -137,7 +145,6 @@ export class MapperService {
 
         return rawReportOfGrades.tables.map((table: any) => {
             const { courseid, userid, userfullname, tabledata } = table;
-
             const gradeItems = Array.isArray(tabledata)
                 ? tabledata
                     .filter((item: any) => item.itemname && item.itemname.content)
@@ -151,15 +158,36 @@ export class MapperService {
                         itemname = itemname.replace(/^Calculated grade\s*/, 'Calculated grade ');
                         itemname = itemname.replace(/^Course total\s*/, 'Course total ');
                         itemname = itemname.replace(/^Calculated grade\s*Course total$/, 'Calculated grade Course total');
+                        itemname = itemname.replace(/QuizExamen/g, 'Quiz Examen');
+                        itemname = itemname.replace(/AggregationCourse/g, 'Aggregation Course');
 
                         let grade: number | string | null = null;
                         if (item.grade && typeof item.grade.content === 'string') {
-                            const cleanGrade = item.grade.content.replace(',', '.').trim();
-                            if (cleanGrade === '-' || cleanGrade === '') {
+                            // Limpia etiquetas HTML en el contenido de grade
+                            const cleanGradeContent = item.grade.content.replace(/<[^>]*>/g, '').replace(',', '.').trim();
+                            if (cleanGradeContent === '-' || cleanGradeContent === '') {
                                 grade = '-';
                             } else {
-                                const parsed = parseFloat(cleanGrade);
-                                grade = isNaN(parsed) ? cleanGrade : parsed;
+                                const parsed = parseFloat(cleanGradeContent);
+                                grade = isNaN(parsed) ? cleanGradeContent : parsed;
+                            }
+                        }
+                        let cleanGrade = '';
+                        if (item.grade && typeof item.grade.content === 'string') {
+                            cleanGrade = item.grade.content
+                                .replace(/<[^>]*>/g, '')
+                                .replace(/\s+/g, ' ')    
+                                .replace(',', '.')      
+                                .trim();
+                        }
+                        if (cleanGrade === '-' || cleanGrade === '') {
+                            grade = '-';
+                        } else {
+                            const match = cleanGrade.match(/-?\d+(\.\d+)?/);
+                            if (match) {
+                                grade = parseFloat(match[0]);
+                            } else {
+                                grade = cleanGrade;
                             }
                         }
                         return {
@@ -231,7 +259,7 @@ export class MapperService {
             };
         });
     }
-  
+
 
     private unixTimestampMapper(timestamp: number): Date {
         return new Date(timestamp * 1000);

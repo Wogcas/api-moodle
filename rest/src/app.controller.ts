@@ -42,17 +42,19 @@ export class AppController {
     }
   }
 
-  // Done
-  @Get('course/:courseId/grades-all')
-  async getAllCourseGrades(
-    @Param('courseId') courseId: number
-  ): Promise<ReportStudentGrades[]> {
-    try {
-      return await this.appService.getGradeFromCourseWithDetails(courseId);
-    } catch (error) {
-      throw new HttpException('Error retrieving all course grades', HttpStatus.BAD_REQUEST);
+  
+    // Done
+    @Get('course/:courseId/grades-all')
+    async getAllCourseGrades(
+      @Param('courseId') courseId: number
+    ): Promise<ReportStudentGrades[]> {
+      try {
+        return await this.appService.getGradeFromCourseWithDetails(courseId);
+      } catch (error) {
+        throw new HttpException('Error retrieving all course grades', HttpStatus.BAD_REQUEST);
+      }
     }
-  }
+  
 
   // Done
   @Get('courses')
