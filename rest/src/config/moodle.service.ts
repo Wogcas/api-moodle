@@ -4,7 +4,7 @@ import { lastValueFrom } from "rxjs";
 import { HttpService } from '@nestjs/axios';
 
 @Injectable()
-export class MoodleService  {
+export class MoodleService {
     private readonly MoodleURL: string;
     private readonly MoodleToken: string;
 
@@ -28,7 +28,7 @@ export class MoodleService  {
             );
         }
     }
- 
+
     async executePostRequest<T>(wsfunction: string, params: Record<string, any>): Promise<T> {
         const body = new URLSearchParams();
         body.set('wstoken', this.MoodleToken);
@@ -57,14 +57,21 @@ export class MoodleService  {
     }
 
     private buildUri(wsfunction: string, params: Record<string, any> = {}): string {
-        const baseUri = `${this.MoodleURL}?wstoken=${this.MoodleToken}&wsfunction=${wsfunction}&moodlewsrestformat=json`;
-        let fullUri = baseUri;
-        for (const key in params) {
-            if (params.hasOwnProperty(key)) {
-                fullUri += `&${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`;
+        try {
+            const baseUri = `${this.MoodleURL}?wstoken=${this.MoodleToken}&wsfunction=${wsfunction}&moodlewsrestformat=json`;
+            let fullUri = baseUri;
+            for (const key in params) {
+                if (params.hasOwnProperty(key)) {
+                    fullUri += `&${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`;
+                }
             }
+            return fullUri;
+        } catch (error) {
+            throw new HttpException(
+                `Error building URI: ${error.message}`,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
         }
-        return fullUri;
     }
 
 }

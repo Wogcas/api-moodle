@@ -26,7 +26,7 @@ export class RabbitMQService implements OnModuleInit {
       this.channel = await this.connection.createChannel();
       await this.channel.assertExchange(this.exchangeName, 'topic', { durable: true });
 
-      console.log(`RabbitMQService conectado a RabbitMQ. Exchange: ${this.exchangeName}`);
+      console.log(`La API Rest se ha conectado a RabbitMQ Server.`);
 
 
       this.connection.on('error', (err) => console.error('Error en la conexión RabbitMQ (RabbitMQService):', err));
