@@ -1,6 +1,7 @@
 import { HttpException, Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Cron } from "@nestjs/schedule";
+import { AppService } from "src/app.service";
 import { MoodleService } from "src/config/moodle.service";
 import { RabbitMQService } from "src/config/rabbitmq.service";
 import { AssigmentSubmition } from "src/dtos/assignment-submission.dto";
@@ -14,13 +15,14 @@ export class NotifyAssignmentTaskService {
         private readonly moodleService: MoodleService,
         private readonly rabbitMQService: RabbitMQService,
         private readonly configService: ConfigService,
+        private readonly appService: AppService,
     ) { }
 
-    @Cron('*/50 * * * * *')
+    @Cron('2 * * * * *')
     async checkNewSubmissions() {
         try {
             this.logger.log('====== STARTING SUBMISSION CHECK ======');
-            const assignments = await this.getActiveAssignments();
+            const assignments = await this.appService.getActiveAssignments();
             await this.processAssignments(assignments);
             this.lastPollTime = new Date();
             this.logger.log('====== SUBMISSION CHECK COMPLETED ======');
@@ -43,31 +45,6 @@ export class NotifyAssignmentTaskService {
     manualCheck() {
         this.logger.log('Manual check requested');
         this.checkNewSubmissions();
-    }
-
-    //ESTE VA SERÁ UTIL PARA TODO EL API REST NO SOLO LA TAREA PROGRAMADA!
-    private async getActiveAssignments(): Promise<any[]> {
-        const params: Record<string, any> = {};
-        try {
-            const response: any = await this.moodleService.executeGetRequest(
-                'mod_assign_get_assignments',
-                params,
-            );
-
-            const result: any[] = [];
-
-            if (response && response.courses) {
-                for (const course of response.courses) {
-                    if (course.assignments) {
-                        result.push(...course.assignments);
-                    }
-                }
-            }
-            return result;
-        } catch (error) {
-            this.logger.error('Error retrieving assignments: {}', error.message, error);
-            throw new HttpException('Failed to get active assignments', error.message);
-        }
     }
 
     private async processAssignments(assignments: any[]) {
