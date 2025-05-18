@@ -49,7 +49,6 @@ export class AppService {
     const response: any = await this.moodleService.executeGetRequest('gradereport_user_get_grades_table', params);
     const rawResponseArray: any[] = response as any[];
     const mappedGradesReports: ReportStudentGrades[] = this.mapperService.mapReportOfGrades(rawResponseArray);
-
     return mappedGradesReports;
   }
 
@@ -96,28 +95,23 @@ export class AppService {
     return result;
   }
 
-
-  // ULTIMOO PENDIENNTEEEE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
   async getAssignmentsBetween(
     courseId: number,
     startDate: Date | number, 
     endDate: Date | number   
-  ): Promise<any[]> { 
-
-    const allAssignments = await this.getAssignments(courseId); // Llama a tu método que ya funciona
-
+  ): Promise<AssginmentInfo[]> {
+    const allAssignments = await this.getAssignments(courseId); 
     const startTimestamp = startDate instanceof Date ? Math.floor(startDate.getTime() / 1000) : startDate;
     const endTimestamp = endDate instanceof Date ? Math.floor(endDate.getTime() / 1000) : endDate;
-
     const filteredAssignments = allAssignments.filter(assignment => {
       const duedate = assignment.duedate;
       if (typeof duedate !== 'number' || duedate <= 0) {
-        return false; // Ignorar asignaciones sin fecha de entrega válida
+        return false;
       }
       return duedate >= startTimestamp && duedate <= endTimestamp;
     });
-    return filteredAssignments;
+    // Mapeamos los resultados filtrados
+    return this.mapperService.mapAssignments(filteredAssignments);
   }
 
 }
