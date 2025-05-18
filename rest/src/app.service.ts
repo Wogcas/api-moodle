@@ -84,27 +84,27 @@ export class AppService {
       throw new InternalServerErrorException('Error retrieving enrolled users');
     }
   }
-  
-async getAssignments(courseId: number): Promise<AssignmentInfo[]> {
-  try {
-    const params = { 'courseids[0]': courseId.toString() };
-    const response: any = await this.moodleService.executeGetRequest('mod_assign_get_assignments', params);
 
-    if (response && response.courses && Array.isArray(response.courses)) {
-      const courseData = response.courses.find((course: any) => Number(course.id) === Number(courseId));
-      if (courseData && Array.isArray(courseData.assignments) && courseData.assignments.length > 0) {
-        return this.mapperService.mapAssignments(courseData.assignments);
+  async getAssignments(courseId: number): Promise<AssignmentInfo[]> {
+    try {
+      const params = { 'courseids[0]': courseId.toString() };
+      const response: any = await this.moodleService.executeGetRequest('mod_assign_get_assignments', params);
+
+      if (response && response.courses && Array.isArray(response.courses)) {
+        const courseData = response.courses.find((course: any) => Number(course.id) === Number(courseId));
+        if (courseData && Array.isArray(courseData.assignments) && courseData.assignments.length > 0) {
+          return this.mapperService.mapAssignments(courseData.assignments);
+        }
+        if (courseData) {
+          return [];
+        }
       }
-      if (courseData) {
-        return [];
-      }
+      throw new NotFoundException(`No assignments found for courseId ${courseId}`);
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+      throw new InternalServerErrorException('Error retrieving assignments');
     }
-    throw new NotFoundException(`No assignments found for courseId ${courseId}`);
-  } catch (error) {
-    if (error instanceof NotFoundException) throw error;
-    throw new InternalServerErrorException('Error retrieving assignments');
   }
-}
 
   // LA DIFERENCIA ES QUE ESTA FUNCION NO FILTRA POR CURSO (util para la tarea programada)
   async getActiveAssignments(): Promise<any[]> {
@@ -130,18 +130,25 @@ async getAssignments(courseId: number): Promise<AssignmentInfo[]> {
     endDate: Date | number
   ): Promise<AssignmentInfo[]> {
     try {
-      const allAssignments = await this.getAssignments(courseId);
+      const allAssignments: AssignmentInfo[] = await this.getAssignments(courseId);
       const startTimestamp = startDate instanceof Date ? Math.floor(startDate.getTime() / 1000) : startDate;
       const endTimestamp = endDate instanceof Date ? Math.floor(endDate.getTime() / 1000) : endDate;
       const filteredAssignments = allAssignments.filter(assignment => {
-        const duedate = assignment.duedate;
-        if (typeof duedate !== 'number' || duedate <= 0) {
+        if (assignment.duedate === null) {
           return false;
         }
-        return duedate >= startTimestamp && duedate <= endTimestamp;
+        let dueDateTimestamp: number;
+        if (assignment.duedate instanceof Date) {
+          dueDateTimestamp = Math.floor(assignment.duedate.getTime() / 1000);
+        } else if (typeof assignment.duedate === 'number') {
+          dueDateTimestamp = assignment.duedate;
+        } else {
+          return false;
+        }
+        return dueDateTimestamp >= startTimestamp && dueDateTimestamp <= endTimestamp;
       });
-      // Mapeamos los resultados filtrados
-      return this.mapperService.mapAssignments(filteredAssignments);
+
+      return filteredAssignments;
     } catch (error) {
       throw new InternalServerErrorException('Error retrieving assignments between dates');
     }

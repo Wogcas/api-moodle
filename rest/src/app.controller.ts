@@ -98,7 +98,7 @@ export class AppController {
     @Param('courseId') courseId: number,
     @Param('start') start: string,
     @Param('end') end: string
-  ): Promise<any[]> {
+  ): Promise<AssignmentInfo[]> {
     try {
       const startDate = new Date(start);
       const endDate = new Date(end);
