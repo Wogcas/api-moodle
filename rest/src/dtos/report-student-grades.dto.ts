@@ -4,6 +4,7 @@ export class ReportStudentGrades {
     userfullname: string;
     useremail: string;
     courseidnumber: string;
+    teacheremail: string;
     gradeItems: {
         itemname: string;
         grade: number | string | null;
