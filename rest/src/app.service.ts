@@ -6,7 +6,7 @@ import { ReportStudentGrades } from './dtos/report-student-grades.dto';
 import { UserInfo } from './dtos/user-info.dto';
 import { MapperService } from './utils/mapper-dto.service';
 import { CourseContent } from './dtos/course-content.dto';
-import { AssginmentInfo } from './dtos/assignment-info.dto';
+import { AssignmentInfo } from './dtos/assignment-info.dto';
 
 @Injectable()
 export class AppService {
@@ -84,24 +84,27 @@ export class AppService {
       throw new InternalServerErrorException('Error retrieving enrolled users');
     }
   }
+  
+async getAssignments(courseId: number): Promise<AssignmentInfo[]> {
+  try {
+    const params = { 'courseids[0]': courseId.toString() };
+    const response: any = await this.moodleService.executeGetRequest('mod_assign_get_assignments', params);
 
-  async getAssignments(courseId: number): Promise<AssginmentInfo[]> {
-    try {
-      const params = { 'courseids[0]': courseId.toString() };
-      const response: any = await this.moodleService.executeGetRequest('mod_assign_get_assignments', params);
-      if (response && Array.isArray(response.courses) && response.courses.length > 0) {
-        // Buscamos el objeto del curso específico dentro del array de cursos devuelto
-        const courseData = response.courses.find((course: any) => course.id === courseId);
-        if (courseData && Array.isArray(courseData.assignments)) {
-          // Si encontramos el curso y tiene un array de asignaciones, lo retornamos
-          return courseData.assignments;
-        }
+    if (response && response.courses && Array.isArray(response.courses)) {
+      const courseData = response.courses.find((course: any) => Number(course.id) === Number(courseId));
+      if (courseData && Array.isArray(courseData.assignments) && courseData.assignments.length > 0) {
+        return this.mapperService.mapAssignments(courseData.assignments);
       }
-      return response.courses[0]?.assignments || []; // Retornamos un array vacío si no hay asignaciones 
-    } catch (error) {
-      throw new InternalServerErrorException('Error retrieving assignments');
+      if (courseData) {
+        return [];
+      }
     }
+    throw new NotFoundException(`No assignments found for courseId ${courseId}`);
+  } catch (error) {
+    if (error instanceof NotFoundException) throw error;
+    throw new InternalServerErrorException('Error retrieving assignments');
   }
+}
 
   // LA DIFERENCIA ES QUE ESTA FUNCION NO FILTRA POR CURSO (util para la tarea programada)
   async getActiveAssignments(): Promise<any[]> {
@@ -125,7 +128,7 @@ export class AppService {
     courseId: number,
     startDate: Date | number,
     endDate: Date | number
-  ): Promise<AssginmentInfo[]> {
+  ): Promise<AssignmentInfo[]> {
     try {
       const allAssignments = await this.getAssignments(courseId);
       const startTimestamp = startDate instanceof Date ? Math.floor(startDate.getTime() / 1000) : startDate;
@@ -141,6 +144,17 @@ export class AppService {
       return this.mapperService.mapAssignments(filteredAssignments);
     } catch (error) {
       throw new InternalServerErrorException('Error retrieving assignments between dates');
+    }
+  }
+
+  async getUserInfo(userId: number): Promise<any> {
+    try {
+      const params = { userids: [userId] };
+      const response: any = await this.moodleService.executeGetRequest('core_user_get_users', params);
+      console.log('User info:', response.users[0]);
+      return response.users[0] || null; // Retornamos el primer usuario o null si no existe
+    } catch (error) {
+      throw new InternalServerErrorException('Error retrieving user info');
     }
   }
 

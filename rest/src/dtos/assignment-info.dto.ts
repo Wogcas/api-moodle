@@ -1,4 +1,4 @@
-export class AssginmentInfo {
+export class AssignmentInfo {
     id: number;
     cmid: number;
     course: number;

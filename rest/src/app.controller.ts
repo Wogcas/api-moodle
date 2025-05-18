@@ -6,7 +6,7 @@ import { CourseInfo } from './dtos/course.dto';
 import { ReportStudentGrades } from './dtos/report-student-grades.dto';
 import { UserInfo } from './dtos/user-info.dto';
 import { CourseContent } from './dtos/course-content.dto';
-import { AssginmentInfo } from './dtos/assignment-info.dto';
+import { AssignmentInfo } from './dtos/assignment-info.dto';
 
 @Controller('api/moodle/rest')
 export class AppController {
@@ -84,7 +84,7 @@ export class AppController {
 
   // Done
   @Get('assignments/:courseId')
-  async getAssignments(@Param('courseId') courseId: number): Promise<AssginmentInfo[]> {
+  async getAssignments(@Param('courseId') courseId: number): Promise<AssignmentInfo[]> {
     try {
       return await this.appService.getAssignments(courseId);
     } catch (error) {
@@ -114,6 +114,17 @@ export class AppController {
       return await this.notifyAssignmentTaskService.manualCheck();
     } catch (error) {
       throw new HttpException('Error retrieving check', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Get('user/:userId')
+  async getUser(@Param('userId') userId: number): Promise<any> {
+    try {
+      const response = await this.appService.getUserInfo(userId);
+      console.log('Response:', response);
+      return response;
+    } catch (error) {
+      throw new HttpException('Error retrieving user info', HttpStatus.BAD_REQUEST);
     }
   }
 

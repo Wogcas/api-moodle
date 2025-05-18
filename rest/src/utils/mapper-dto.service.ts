@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { AssginmentInfo } from "src/dtos/assignment-info.dto";
+import { AssignmentInfo } from "src/dtos/assignment-info.dto";
 import { CourseContent } from "src/dtos/course-content.dto";
 import { CourseInfo } from "src/dtos/course.dto";
 import { ReportStudentGrades } from "src/dtos/report-student-grades.dto";
@@ -104,7 +104,7 @@ export class MapperService {
         });
     }
 
-    mapAssignments(rawAssignments: any[]): AssginmentInfo[] {
+    mapAssignments(rawAssignments: any[]): AssignmentInfo[] {
         if (!Array.isArray(rawAssignments)) {
             return [];
         }
@@ -114,7 +114,7 @@ export class MapperService {
                 ? rawAssignment.intro.replace(/<[^>]*>/g, '') // Si intro existe, remueve las etiquetas HTML
                 : '';
 
-            const mappedAssignment: AssginmentInfo = {
+            const mappedAssignment: AssignmentInfo = {
                 id: rawAssignment.id,
                 cmid: rawAssignment.cmid,
                 course: rawAssignment.course,
