@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException, StreamableFile } from '@nestjs/common';
 import { MoodleSiteInfo } from './dtos/site-info.dto';
 import { MoodleService } from './config/moodle.service';
 import { CourseInfo } from './dtos/course.dto';
@@ -203,4 +203,74 @@ export class AppService {
     }
   }
 
+
+  async getSubmissionFile(
+    courseId: number,
+    assignmentId: number,
+    userId: number,
+  ): Promise<StreamableFile> {
+    try {
+      const submission = await this.getAssignmentSubmission(assignmentId, userId);
+      const filePlugin = submission.plugins?.find((p: any) => p.type === 'file');
+      const fileArea = filePlugin?.fileareas?.find((a: any) => a.area === 'submission_files');
+      const files = fileArea?.files;
+
+      if (!files?.length) {
+        throw new NotFoundException('No files found in this submission');
+      }
+
+      const file = files[0];
+      const fileBuffer = await this.moodleService.downloadFile(file.fileurl);
+
+      const streamable = new StreamableFile(fileBuffer, {
+        type: file.mimetype || 'application/octet-stream',
+        disposition: `attachment; filename="${encodeURIComponent(file.filename)}"`,
+        length: fileBuffer.length,
+      });
+
+      return streamable;
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+      throw new InternalServerErrorException('Error retrieving submission file');
+    }
+  }
+
+  private async getAssignmentSubmission(
+    assignmentId: number,
+    userId: number,
+  ): Promise<any> {
+    try {
+      const params = {
+        assignid: assignmentId,
+        userid: userId,
+      };
+
+      const response = await this.moodleService.executeGetRequest(
+        'mod_assign_get_submission_status',
+        params,
+      ) as {
+        lastattempt?: {
+          submission?: {
+            userid: number;
+            plugins?: any[];
+          };
+        };
+      };
+
+      if (!response?.lastattempt?.submission) {
+        throw new NotFoundException('Submission not found');
+      }
+
+      if (Number(response.lastattempt.submission.userid) !== Number(userId)) {
+        throw new NotFoundException('Submission not found');
+      }
+
+      return response.lastattempt.submission;
+    } catch (error) {
+      if (error?.errorcode === 'nopermission') {
+        throw new NotFoundException('Submission not found or no permission');
+      }
+      throw error;
+    }
+  }
 }

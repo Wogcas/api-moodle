@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, HttpStatus, Param } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, NotFoundException, Param, StreamableFile } from '@nestjs/common';
 import { AppService } from './app.service';
 import { MoodleSiteInfo } from './dtos/site-info.dto';
 import { NotifyAssignmentTaskService } from './services/notify-assignment-task.service';
@@ -128,6 +128,25 @@ export class AppController {
       return await this.notifyAssignmentTaskService.manualCheck();
     } catch (error) {
       throw new HttpException('Error retrieving check', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Get('courses/:courseId/assignments/:assignmentId/submissions/users/:userId/file')
+  async downloadSubmissionFile(
+    @Param('courseId') courseId: number,
+    @Param('assignmentId') assignmentId: number,
+    @Param('userId') userId: number,
+  ): Promise<StreamableFile> {
+    try {
+      return await this.appService.getSubmissionFile(courseId, assignmentId, userId);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+      }
+      throw new HttpException(
+        'Error retrieving submission file', 
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
     }
   }
 

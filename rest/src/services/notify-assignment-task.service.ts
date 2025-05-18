@@ -18,7 +18,7 @@ export class NotifyAssignmentTaskService {
         private readonly appService: AppService,
     ) { }
 
-    @Cron('2 * * * * *')
+    @Cron('0 */5 * * * *')
     async checkNewSubmissions() {
         try {
             this.logger.log('====== STARTING SUBMISSION CHECK ======');
