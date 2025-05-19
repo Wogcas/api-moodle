@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { AssignmentInfo } from "src/dtos/assignment-info.dto";
 import { CourseContent } from "src/dtos/course-content.dto";
 import { CourseInfo } from "src/dtos/course.dto";
+import { GradeInfo } from "src/dtos/grade-info.dto";
 import { ReportStudentGrades } from "src/dtos/report-student-grades.dto";
 import { MoodleSiteInfo } from "src/dtos/site-info.dto";
 import { UserInfo } from "src/dtos/user-info.dto";
@@ -104,8 +105,8 @@ export class MapperService {
             if (rawUser.roles && Array.isArray(rawUser.roles)) {
                 mappedUser.roles = rawUser.roles.map((rawRole: any) => ({
                     roleid: typeof rawRole?.roleid === 'number' ? rawRole.roleid : 0,
-                    shortname: typeof rawRole?.shortname === 'string' ? rawRole.shortname : '', 
-                    
+                    shortname: typeof rawRole?.shortname === 'string' ? rawRole.shortname : '',
+
                 }));
             }
             return mappedUser;
@@ -119,7 +120,7 @@ export class MapperService {
         return rawAssignments.map(rawAssignment => {
 
             const cleanIntro = rawAssignment.intro
-                ? rawAssignment.intro.replace(/<[^>]*>/g, '') 
+                ? rawAssignment.intro.replace(/<[^>]*>/g, '')
                 : '';
 
             const mappedAssignment: AssignmentInfo = {
@@ -176,8 +177,8 @@ export class MapperService {
                         if (item.grade && typeof item.grade.content === 'string') {
                             cleanGrade = item.grade.content
                                 .replace(/<[^>]*>/g, '')
-                                .replace(/\s+/g, ' ')    
-                                .replace(',', '.')      
+                                .replace(/\s+/g, ' ')
+                                .replace(',', '.')
                                 .trim();
                         }
                         if (cleanGrade === '-' || cleanGrade === '') {
@@ -206,8 +207,6 @@ export class MapperService {
         });
     }
 
-
-    // Modificado para incluir email del usuario y idnumber del curso recibidos como argumentos
     mapReportOfAllGrades(
         rawReportOfGrades: any,
         { courseidnumber, useremail }: { courseidnumber: string; useremail: string }
@@ -260,7 +259,46 @@ export class MapperService {
         });
     }
 
+    mapToGradeInfo(rawData: any, userFullname: string): GradeInfo {
+        return {
+            courseid: rawData.courseid,
+            userid: rawData.userid,
+            userfullname: userFullname,
+            gradeItems: this.extractGradeItems(rawData.tabledata)
+        };
+    }
 
+    private extractGradeItems(tabledata: any[]): { itemname: string; grade: string | number | null }[] {
+        if (!Array.isArray(tabledata)) return [];
+
+        return tabledata
+            .filter(item => item.itemname?.content)
+            .map(item => ({
+                itemname: this.cleanItemName(item.itemname.content),
+                grade: this.parseGradeValue(item.grade?.content)
+            }));
+    }
+
+    private cleanItemName(name: string): string {
+        let cleaned = name.replace(/<[^>]*>/g, '').trim();
+        cleaned = cleaned.replace(/\s+/g, ' ');
+        cleaned = cleaned.replace(/^Assignment\s*/, 'Assignment ');
+        cleaned = cleaned.replace(/^QuizExamen/g, 'Quiz Examen');
+        return cleaned;
+    }
+
+    private parseGradeValue(gradeContent: string): string | number | null {
+        if (!gradeContent) return null;
+        let clean = gradeContent.replace(/<[^>]*>/g, '').replace(',', '.').replace(/\s+/g, ' ').trim();
+        clean = clean.replace(/-?\s*Grade analysis\s*$/i, '-').trim();
+        if (clean === '-' || clean === '') return '-';
+        const match = clean.match(/-?\d+(\.\d+)?/);
+        if (match) {
+            const numeric = parseFloat(match[0]);
+            return isNaN(numeric) ? clean : numeric;
+        }
+        return clean;
+    }
     private unixTimestampMapper(timestamp: number): Date {
         return new Date(timestamp * 1000);
     }

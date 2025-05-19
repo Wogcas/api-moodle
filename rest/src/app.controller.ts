@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, HttpStatus, NotFoundException, Param, StreamableFile } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, NotFoundException, Param, ParseIntPipe, StreamableFile } from '@nestjs/common';
 import { AppService } from './app.service';
 import { MoodleSiteInfo } from './dtos/site-info.dto';
 import { NotifyAssignmentTaskService } from './services/notify-assignment-task.service';
@@ -7,6 +7,7 @@ import { ReportStudentGrades } from './dtos/report-student-grades.dto';
 import { UserInfo } from './dtos/user-info.dto';
 import { CourseContent } from './dtos/course-content.dto';
 import { AssignmentInfo } from './dtos/assignment-info.dto';
+import { GradeInfo } from './dtos/grade-info.dto';
 
 @Controller('api/moodle/rest')
 export class AppController {
@@ -30,6 +31,15 @@ export class AppController {
     }
   }
 
+  @Get('courses/:courseId/users/:userId/grades/:gradeItem')
+  async getGrade(
+    @Param('courseId', ParseIntPipe) courseId: number,
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('gradeItem') gradeItem: string
+  ): Promise<GradeInfo> {
+    return this.appService.getSingleGrade(courseId, userId, gradeItem);
+  }
+
   @Get('user/:userId/course/:courseId/grades')
   async getCourseGradesFromStudent(
     @Param('userId') userId: number,
@@ -42,19 +52,17 @@ export class AppController {
     }
   }
 
-  
-    // Done
-    @Get('course/:courseId/grades-all')
-    async getAllCourseGrades(
-      @Param('courseId') courseId: number
-    ): Promise<ReportStudentGrades[]> {
-      try {
-        return await this.appService.getGradeFromCourseWithDetails(courseId);
-      } catch (error) {
-        throw new HttpException('Error retrieving all course grades', HttpStatus.BAD_REQUEST);
-      }
+  // Done
+  @Get('course/:courseId/grades-all')
+  async getAllCourseGrades(
+    @Param('courseId') courseId: number
+  ): Promise<ReportStudentGrades[]> {
+    try {
+      return await this.appService.getGradeFromCourseWithDetails(courseId);
+    } catch (error) {
+      throw new HttpException('Error retrieving all course grades', HttpStatus.BAD_REQUEST);
     }
-  
+  }
 
   // Done
   @Get('courses')
@@ -144,7 +152,7 @@ export class AppController {
         throw new HttpException(error.message, HttpStatus.NOT_FOUND);
       }
       throw new HttpException(
-        'Error retrieving submission file', 
+        'Error retrieving submission file',
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }

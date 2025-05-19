@@ -7,6 +7,7 @@ import { UserInfo } from './dtos/user-info.dto';
 import { MapperService } from './utils/mapper-dto.service';
 import { CourseContent } from './dtos/course-content.dto';
 import { AssignmentInfo } from './dtos/assignment-info.dto';
+import { GradeInfo } from './dtos/grade-info.dto';
 
 @Injectable()
 export class AppService {
@@ -26,6 +27,41 @@ export class AppService {
       return this.mapperService.mapMoodleSiteInfo(response);
     } catch (error) {
       throw new InternalServerErrorException('Error retrieving site info');
+    }
+  }
+
+  async getSingleGrade(
+    courseId: number,
+    userId: number,
+    gradeItemName: string
+  ): Promise<GradeInfo> {
+    try {
+      const params = { courseid: courseId, userid: userId };
+      const response = await this.moodleService.executeGetRequest<{ tables?: any[] }>(
+        'gradereport_user_get_grades_table',
+        params
+      );
+
+      if (!response?.tables?.[0]) {
+        throw new NotFoundException('No grades found');
+      }
+
+      const rawData = response.tables[0];
+      const gradeInfo = this.mapperService.mapToGradeInfo(rawData, rawData.userfullname);
+
+      const searchTerm = gradeItemName.toLowerCase().trim();
+      gradeInfo.gradeItems = gradeInfo.gradeItems.filter(item =>
+        item.itemname.toLowerCase().includes(searchTerm)
+      );
+
+      if (gradeInfo.gradeItems.length === 0) {
+        throw new NotFoundException(`Grade item "${gradeItemName}" not found`);
+      }
+
+      return gradeInfo;
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+      throw new InternalServerErrorException('Error retrieving grade');
     }
   }
 
