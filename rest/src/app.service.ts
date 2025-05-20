@@ -218,18 +218,32 @@ export class AppService {
       const allAssignments: AssignmentInfo[] = await this.getAssignments(courseId);
       const startTimestamp = startDate instanceof Date ? Math.floor(startDate.getTime() / 1000) : startDate;
       const endTimestamp = endDate instanceof Date ? Math.floor(endDate.getTime() / 1000) : endDate;
+
       const filteredAssignments = allAssignments.filter(assignment => {
         if (assignment.duedate === null) {
           return false;
         }
+
+        // Convertir el string de fecha a timestamp
         let dueDateTimestamp: number;
-        if (assignment.duedate instanceof Date) {
+        if (typeof assignment.duedate === 'string') {
+          // Parsear el string YYYY-MM-DD HH:MM:SS a Date
+          const dateParts = assignment.duedate.split(' ');
+          const [year, month, day] = dateParts[0].split('-').map(Number);
+          const [hours, minutes, seconds] = dateParts[1].split(':').map(Number);
+
+          const dateObj = new Date(year, month - 1, day, hours, minutes, seconds);
+          dueDateTimestamp = Math.floor(dateObj.getTime() / 1000);
+        } else if (assignment.duedate instanceof Date) {
+          // Mantener compatibilidad por si acaso
           dueDateTimestamp = Math.floor(assignment.duedate.getTime() / 1000);
         } else if (typeof assignment.duedate === 'number') {
+          // Mantener compatibilidad por si acaso
           dueDateTimestamp = assignment.duedate;
         } else {
           return false;
         }
+
         return dueDateTimestamp >= startTimestamp && dueDateTimestamp <= endTimestamp;
       });
 

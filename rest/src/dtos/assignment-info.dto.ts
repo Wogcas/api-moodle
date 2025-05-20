@@ -4,7 +4,7 @@ export class AssignmentInfo {
     course: number;
     name: string;
     sendnotifications: number;
-    duedate: Date | null;
+    duedate: Date | string | null;
     grade: number;
     intro: string;
 }

@@ -129,9 +129,9 @@ export class MapperService {
                 course: rawAssignment.course,
                 name: rawAssignment.name,
                 sendnotifications: rawAssignment.sendnotifications,
-                duedate: typeof rawAssignment.duedate === 'number' && rawAssignment.duedate !== 0
-                    ? this.unixTimestampMapper(rawAssignment.duedate)
-                    : null,
+            duedate: typeof rawAssignment.duedate === 'number' && rawAssignment.duedate !== 0
+                ? this.unixTimestampMapper(rawAssignment.duedate) // Esto ahora devuelve un string
+                : null,
                 grade: rawAssignment.grade,
                 intro: cleanIntro
             };
@@ -299,8 +299,17 @@ export class MapperService {
         }
         return clean;
     }
-    private unixTimestampMapper(timestamp: number): Date {
-        return new Date(timestamp * 1000);
+
+    private formatDate(date: Date): string {
+        const pad = (num: number) => num.toString().padStart(2, '0');
+
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +
+            `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    }
+
+    private unixTimestampMapper(timestamp: number): string {
+        const date = new Date(timestamp * 1000);
+        return this.formatDate(date);
     }
 
 }
