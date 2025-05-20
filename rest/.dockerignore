@@ -1,0 +1,39 @@
+# Ignorar dependencias y builds locales
+node_modules
+dist
+
+# Excluir testing y cobertura
+test
+coverage
+.jest
+
+# Ignorar configuraciones de IDEs y editores
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Excluir archivos de entorno (se configuran via Docker)
+.env*
+!.env.example
+
+# Ignorar control de versiones
+.git
+.gitignore
+.github
+
+# Excluir logs y debug
+*.log
+npm-debug.log*
+
+# Ignorar archivos Docker (no necesarios en el build)
+Dockerfile
+docker-compose.yml
+
+# Otros
+README.md
+tmp
+temp
