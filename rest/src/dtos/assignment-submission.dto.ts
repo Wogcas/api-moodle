@@ -3,5 +3,6 @@ export class AssigmentSubmition {
     assignmentName: string;
     submissionId: number;
     userId: number;
+    course: number;
     timeModified: string;
 }

@@ -131,6 +131,7 @@ export class NotifyAssignmentTaskService {
       assignmentName: assignment.name,
       submissionId: submission.id,
       userId: submission.userid,
+      course: assignment.course,
       timeModified: formattedTime, // Usamos la fecha formateada
     };
   }
