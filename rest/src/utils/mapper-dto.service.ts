@@ -25,7 +25,7 @@ export class MapperService {
     mapCourses(response: any): CourseInfo[] {
         if (!Array.isArray(response)) return [];
         return response
-            .filter((course: any) => course.format === 'topics')
+            .filter((course: any) => course.format === 'weeks')
             .map((course: any) => {
                 const {
                     id,
